@@ -801,9 +801,10 @@ namespace gr::pmt {
 #define X(T)                                                                    \
     extern template Value&   Value::operator=(Tensor<T>&& tensor);              \
     extern template Value&   Value::operator=(const Tensor<T>& tensor);         \
-    extern template bool     Value::holds<T>() const noexcept;                  \
-    extern template T*       Value::get_if<T>() noexcept;                       \
-    extern template const T* Value::get_if<T>() const noexcept;
+    /* NOTE: Value::holds/get_if are constrained member templates.              \
+     * Keep them out of extern template declarations to avoid declaration/       \
+     * definition mismatch across toolchains; explicit instantiations live       \
+     * in Value.cpp. */
 
 GR_PMT_VALUE_TENSOR_ELEMENT_TYPES
 #undef X
@@ -825,9 +826,7 @@ bool               Value::holds<std::size_t>() const noexcept = delete;
 #endif
 
 // platform-dependent aliasing: unsigned long may differ from uint64_t (e.g. Apple ARM64)
-extern template bool                 Value::holds<unsigned long>() const noexcept;
-extern template unsigned long*       Value::get_if<unsigned long>() noexcept;
-extern template const unsigned long* Value::get_if<unsigned long>() const noexcept;
+// Keep constrained holds/get_if out of extern template declarations (see note above).
 
 // clang-format on
 
