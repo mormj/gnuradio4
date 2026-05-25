@@ -6,8 +6,63 @@ on:
   pull_request:
 
 jobs:
+  dco:
+    name: "DCO"
+    if: github.event_name == 'pull_request'
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Check commit signoffs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commits = await github.paginate(github.rest.pulls.listCommits, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const missing = commits.filter(({ commit }) => !/^Signed-off-by:\s.+$/im.test(commit.message));
+
+            for (const { sha } of missing) {
+              core.error(`Commit ${sha} is missing a Signed-off-by line`);
+            }
+
+            if (missing.length > 0) {
+              core.setFailed(`${missing.length} commit(s) missing DCO signoff`);
+            }
+
+  restyled:
+    name: "Restyled"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: Restyled-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Ensure fork is public
+        if: ${{ github.event.pull_request.head.repo.private }}
+        run: |
+          echo "Private forks are not supported for restyling" >&2
+          exit 1
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: restyled-io/actions/setup@v4
+
+      - id: restyler
+        uses: restyled-io/actions/run@v4
+        with:
+          fail-on-differences: true
+
   build:
     name: "${{ matrix.name }}"
+    needs: [dco, restyled]
+    if: always() && (github.event_name != 'pull_request' || (needs.dco.result == 'success' && needs.restyled.result == 'success'))
     runs-on: "ubuntu-latest"
     concurrency:
       # Cancel running builds inside work (PR) branches, build all revisions for the main branch
@@ -156,7 +211,8 @@ jobs:
 
   extended-build:
     name: "${{ matrix.name }}"
-    if: github.event_name == 'push'
+    needs: [dco, restyled]
+    if: always() && github.event_name == 'push'
     runs-on: "ubuntu-latest"
     concurrency:
       group: ${{ github.workflow }}-${{ github.run_id }}-${{ matrix.name }}
@@ -296,7 +352,8 @@ jobs:
 
   coverage:
     name: "GCC-14 Coverage"
-    if: github.event_name == 'push'
+    needs: [dco, restyled]
+    if: always() && github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
