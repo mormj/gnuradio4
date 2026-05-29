@@ -26,13 +26,6 @@ jobs:
             cc: gcc-14
             cxx: g++-14
             cmake-build-type: Release
-            cmake_flags: "-DADDRESS_SANITIZER=OFF"
-          - name: "Ubuntu 24.04 | gcc-14 | Debug"
-            cache_key: ubuntu-2404-gcc14-debug
-            image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
-            cc: gcc-14
-            cxx: g++-14
-            cmake-build-type: Debug
             cmake_flags: "-DADDRESS_SANITIZER=ON"
           - name: "Ubuntu 26.04 | gcc | Release"
             cache_key: ubuntu-2604-gcc-release
@@ -40,35 +33,14 @@ jobs:
             cc: gcc
             cxx: g++
             cmake-build-type: Release
-            cmake_flags: "-DADDRESS_SANITIZER=OFF"
+            cmake_flags: "-DADDRESS_SANITIZER=ON"
           - name: "Ubuntu 26.04 | gcc | Debug"
             cache_key: ubuntu-2604-gcc-debug
             image: ghcr.io/gnuradio/ci:ubuntu-26.04-4.0
             cc: gcc
             cxx: g++
             cmake-build-type: Debug
-            cmake_flags: "-DADDRESS_SANITIZER=ON"
-          - name: "Ubuntu 24.04 | gcc-15 | Release"
-            cache_key: ubuntu-2404-gcc15-release
-            image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
-            cc: gcc-15
-            cxx: g++-15
-            cmake-build-type: Release
             cmake_flags: "-DADDRESS_SANITIZER=OFF"
-          - name: "Ubuntu 24.04 | gcc-15 | Debug"
-            cache_key: ubuntu-2404-gcc15-debug
-            image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
-            cc: gcc-15
-            cxx: g++-15
-            cmake-build-type: Debug
-            cmake_flags: "-DADDRESS_SANITIZER=ON"
-          - name: "Ubuntu 24.04 | clang-20 | Debug"
-            cache_key: ubuntu-2404-clang20-debug
-            image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
-            cc: clang-20
-            cxx: clang++-20
-            cmake-build-type: Debug
-            cmake_flags: "-DADDRESS_SANITIZER=ON"
           - name: "Ubuntu 24.04 | clang-20 | Release"
             cache_key: ubuntu-2404-clang20-release
             image: ghcr.io/gnuradio/ci:ubuntu-24.04-4.0
@@ -82,13 +54,6 @@ jobs:
             cc: clang
             cxx: clang++
             cmake-build-type: Release
-            cmake_flags: "-DADDRESS_SANITIZER=OFF"
-          - name: "Fedora 44 | clang | Debug"
-            cache_key: fedora-44-clang-debug
-            image: ghcr.io/gnuradio/ci:fedora-44-4.0
-            cc: clang
-            cxx: clang++
-            cmake-build-type: Debug
             cmake_flags: "-DADDRESS_SANITIZER=ON"
           - name: "Ubuntu 24.04 | Emscripten | Release"
             cache_key: ubuntu-2404-emscripten-release
@@ -146,8 +111,19 @@ jobs:
           CC: "${{ matrix.cc }}"
           CXX: "${{ matrix.cxx }}"
           CMAKE_EXPORT_COMPILE_COMMANDS: "ON"
-        run: |
-          cmake -S . -B ../build -DCMAKE_COLOR_DIAGNOSTICS=ON -DDISABLE_EXTERNAL_DEPS_WARNINGS=ON -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DUSE_CCACHE=ON -DENABLE_COVERAGE=OFF ${{ matrix.cmake_flags }}
+        run: >
+          cmake 
+              -S . 
+              -B ../build
+              -DCMAKE_COLOR_DIAGNOSTICS=ON
+              -DDISABLE_EXTERNAL_DEPS_WARNINGS=ON
+              -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}
+              -DUSE_CCACHE=ON
+              -DENABLE_COVERAGE=OFF
+              -DCMAKE_COMPILE_COMMANDS=ON
+              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+              -DCMAKE_C_COMPILER=${{ matrix.cc }}
+              ${{ matrix.cmake_flags }}
 
       - name: Configure CMake Emscripten
         if: matrix.cmake_wrapper == 'emcmake'

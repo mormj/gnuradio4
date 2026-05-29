@@ -138,7 +138,7 @@ jobs:
             fetchContent-${{ runner.os }}-${{ matrix.cache_key }}
 
       - name: Configure
-        if: matrix.cmake_wrapper == null && matrix.cxx != 'acpp'
+        if: matrix.cmake_wrapper == null
         shell: bash
         env:
           CC: "${{ matrix.cc }}"
