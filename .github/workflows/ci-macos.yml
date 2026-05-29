@@ -40,8 +40,8 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Install LLVM and ccache
-        run: brew install ${{ matrix.compiler.brew_pkg }} ccache cpr
+      - name: Install LLVM and dependencies
+        run: brew install ${{ matrix.compiler.brew_pkg }} ccache cpp-httplib cpr libsoundio pkgconf
 
       - name: Log compiler version
         run: ${{ matrix.compiler.prefix }}/bin/clang --version
