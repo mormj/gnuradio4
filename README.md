@@ -11,28 +11,34 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-# GNU Radio 4.0
+# GNU Radio 4 Core
 
 > [!IMPORTANT]
 > GNU Radio 4.0 (GR4) is currently in a maturing beta state as it approaches its
-> first stable release. It is suitable for evaluation, experimentation, and early
-> development. GNU Radio 3.x remains the current stable release series for users
-> who require the existing production-supported GNU Radio platform.
+> first stable release. This repository contains the core runtime and SDK. It is
+> suitable for evaluation, experimentation, early core development, and
+> downstream block-library development. GNU Radio 3.x remains the current stable
+> release series for users who require the existing production-supported GNU
+> Radio platform.
 >
 > - GNU Radio 3.x stable release series: https://github.com/gnuradio/gnuradio
 > - Report GR4 core issues here: https://github.com/gnuradio/gnuradio4-core/issues
 > - Report GNU Radio 3.x issues here: https://github.com/gnuradio/gnuradio/issues
 
-GNU Radio is a free & open-source signal processing runtime and signal processing
-software development toolkit. Originally developed for use with software-defined
-radios and for simulating wireless communications, it's robust capabilities have
-led to adoption in hobbyist, academic, and commercial environments. GNU Radio has
-found use in software-defined radio, digital communications, nuclear physics, high-
-energy particle physics, astrophysics, radio astronomy and more!
+`gnuradio4-core` is the core of GNU Radio 4: the C++ runtime, graph and block
+model, scheduler infrastructure, buffer and port APIs, plugin/registry support,
+and installed SDK used by external block libraries. It does not contain the full
+GNU Radio 4 workspace, standard block libraries, or reusable DSP algorithm
+repository.
+
+Use this repository when working on the GR4 runtime itself or when building an
+out-of-tree block library against the installed core SDK. Use the GNU Radio 4
+workspace repository when you want the core, algorithm libraries, and standard
+blocks together.
 
 ## Building
 
-GNU Radio 4.0 uses modern C++ (C++23), and is tested for
+GNU Radio 4 core uses modern C++ (C++23), and is tested for
 
 - CMake (>= 3.25),
 - GCC (>=14, recommended: >=15)
@@ -100,25 +106,40 @@ describe how to set up a local development environment.
 - [GNU Radio Chatroom on Matrix](https://chat.gnuradio.org/)
   - Specifically for discussions related to GNU Radio 4.0 join the [#architecture channel](https://matrix.to/#/#gr4-technical-users:gnuradio.org)
 
-## What's New in GNU Radio 4.0?
+## What This Repository Provides
 
-GNU Radio 4.0 is a major modernization of the GNU Radio runtime, block model, and application architecture. It preserves the core GNU Radio workflow - building signal-processing systems from reusable blocks and flowgraphs - while introducing a cleaner C++ foundation, stronger typing, improved performance, and more flexible runtime behavior.
+GNU Radio 4 is a major modernization of the GNU Radio runtime, block model, and
+application architecture. This core repository provides the foundation that
+external algorithm and block repositories build on.
 
-- **Familiar GNU Radio Workflow**: Blocks and flowgraphs remain central to GNU Radio. Applications can still be built graphically, from Python, or directly in C++, while the underlying architecture has been simplified and modernized.
+- **Core Runtime and Graph Model**: Blocks, ports, buffers, flowgraphs, tags,
+  messages, and schedulers form the runtime foundation for GR4 applications.
 
-- **Modern C++ Block Development**: GNU Radio 4 uses modern C++ language features and design patterns to make block development more direct, type-safe, and maintainable.
+- **Modern C++ Block Development API**: The core SDK uses C++23 language
+  features to make block development direct, type-safe, and maintainable.
 
-- **Stronger Data Type Support**: GR4 supports fundamental numeric types such as integers, floats, and complex values, while also enabling structured, user-defined, and application-specific data types.
+- **Installed SDK for External Repositories**: The exported CMake packages,
+  blocklib generator, registry support, and SDK Docker image let downstream
+  block libraries build without depending on this source tree layout.
 
-- **High-Performance Runtime**: The runtime is designed for efficient signal processing using lock-free buffers, compile-time optimization, and SIMD support
+- **Stronger Data Type Support**: GR4 supports fundamental numeric types such as
+  integers, floats, and complex values, while also enabling structured,
+  user-defined, and application-specific data types.
 
-- **Flexible Scheduling Model**: GR4 introduces a more flexible scheduling architecture, allowing different schedulers to optimize for throughput, latency, parallelism, or application-specific execution requirements.
+- **High-Performance Runtime Primitives**: The runtime is designed for efficient
+  signal processing using lock-free buffers, compile-time optimization, and SIMD
+  support.
 
-- **Recursive Flowgraphs and Feedback**: Flowgraphs can represent recursive directed graphs, enabling feedback loops and more expressive system architectures.
+- **Flexible Scheduling Model**: GR4 introduces a scheduling architecture that
+  can optimize for throughput, latency, parallelism, or application-specific
+  execution requirements.
 
-- **Broader Execution Targets**: GR4 is designed with portability in mind, targeting CPUs today while leaving room for hardware accelerators and heterogeneous architectures
+- **Recursive Flowgraphs and Feedback**: Flowgraphs can represent recursive
+  directed graphs, enabling feedback loops and more expressive system
+  architectures.
 
-- **From Research to Deployment**: GNU Radio 4 aims to serve the full SDR lifecycle: experimentation, education, prototyping, test systems, and operational research or industrial deployments.
+- **Portable Foundation**: GR4 targets CPUs today while leaving room for
+  hardware accelerators and heterogeneous architectures.
 
 ## License and Copyright
 

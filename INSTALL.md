@@ -1,6 +1,6 @@
 # GNU Radio 4 Core Installation Guide
 
-This document installs only `gnuradio4-core`: the GR4 core runtime, block
+This document describes installation for only `gnuradio4-core`: the GR4 core runtime, block
 model, scheduler, and core SDK used by block-library development. It does not
 install the full GNU Radio 4 distribution, standard blocks, or algorithm
 repository.
