@@ -11,32 +11,45 @@ cd gnuradio4-core
 
 ## Building
 
-### Docker CLI
+### SDK Docker Image
 
-To just compile GNU Radio 4 core without installing any dependencies you can use the Docker image used by CI builds. The snippet below uses `docker run` to start the container with the current directory mapped into the container with the correct user and group IDs.
-It then compiles the project and runs the testsuite.
-Note that while the binaries inside of `./build` can be accessed on the host system, they are linked against the libraries of the container and will most probably not run on the host system.
+For core runtime development, prefer the native build below or the umbrella
+workspace scripts. The SDK Docker image is available for downstream out-of-tree module
+development and for checking that a consumer can build against an installed GNU
+Radio 4 core SDK.
+
+The SDK image installs GNU Radio 4 under `/opt/gnuradio4`. Downstream builds
+should set `CMAKE_PREFIX_PATH=/opt/gnuradio4`.
 
 ```bash
-me@host$ cd gnuradio4-core
 me@host$ docker run \
-    --user `id -u`:`id -g` \
-    --volume="/etc/group:/etc/group:ro" \
-    --volume="/etc/passwd:/etc/passwd:ro" \
-    --volume="/etc/shadow:/etc/shadow:ro" \
-    --workdir=/work/src --volume `pwd`:/work/src -it \
-    ghcr.io/fair-acc/gr4-build-container bash
-
-me@aba123ef$ # export CXX=c++ # uncomment to use clang
-me@aba123ef$ cmake -S . -B build
-me@aba123ef$ cmake --build build
-me@aba123ef$ ctest --test-dir build
+    --rm -it \
+    -v "$PWD:/work" \
+    -w /work \
+    ghcr.io/gnuradio/gnuradio4-core-sdk:main \
+    bash
 ```
+
+To smoke-test the installed SDK with the minimal external block library in this
+repository:
+
+```bash
+me@sdk$ cmake -S test_external/minimal_blocklib -B build-minimal-blocklib \
+    -DCMAKE_PREFIX_PATH=/opt/gnuradio4
+me@sdk$ cmake --build build-minimal-blocklib
+```
+
+For reproducible CI, pin the image to a full git SHA tag rather than `:main`.
+See [docs/ci/sdk-image.md](docs/ci/sdk-image.md) for SDK image details.
 
 ### Docker IDE
 
-Some IDEs provide a simple way to specify a docker container to use for building and executing a project. For example in JetBrains CLion you can set this up in `Settings->Build,Execution,Deployment->Toolchains->[+]->Docker`, leaving everything as the default except for setting `Image` to `ghcr.io/fair-acc/gr4-build-container`.
-By default this will use the gcc-14 compiler included in the image, by setting `CXX` to `clang++-18` you can also use clang.
+Some IDEs provide a simple way to specify a Docker container to use for building
+and executing a project. Use the SDK image when working on downstream consumers
+of the installed SDK. Use a native toolchain or the umbrella workspace when
+editing the core repository itself. For SDK-based IDE workflows, set the image
+to `ghcr.io/gnuradio/gnuradio4-core-sdk:main` and configure CMake with
+`CMAKE_PREFIX_PATH=/opt/gnuradio4`.
 
 ### Native
 

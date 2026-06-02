@@ -1,6 +1,6 @@
-# GNU Radio 4 SDK Image
+# GNU Radio 4 Core SDK Image
 
-The GNU Radio 4 SDK image is published to GHCR on pushes to `main` by
+The GNU Radio 4 core SDK image is published to GHCR on pushes to `main` by
 `.github/workflows/sdk-image.yml`. It is intended for downstream out-of-tree
 module development and CI, not as a user-facing binary installer.
 
@@ -23,8 +23,8 @@ moving convenience tag and should not be treated as reproducible.
 Published tags:
 
 ```text
-ghcr.io/gnuradio/gnuradio4-sdk:<full-git-sha>
-ghcr.io/gnuradio/gnuradio4-sdk:main
+ghcr.io/gnuradio/gnuradio4-core-sdk:<full-git-sha>
+ghcr.io/gnuradio/gnuradio4-core-sdk:main
 ```
 
 Example downstream GitHub Actions usage:
@@ -34,7 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/gnuradio/gnuradio4-sdk:<sha>
+      image: ghcr.io/gnuradio/gnuradio4-core-sdk:<sha>
 
     steps:
       - uses: actions/checkout@v4
@@ -52,6 +52,6 @@ Example local container build:
 docker run --rm -it \
   -v "$PWD:/work" \
   -w /work \
-  ghcr.io/gnuradio/gnuradio4-sdk:<sha> \
+  ghcr.io/gnuradio/gnuradio4-core-sdk:<sha> \
   bash -lc 'cmake -S . -B build -DCMAKE_PREFIX_PATH=/opt/gnuradio4 && cmake --build build --parallel'
 ```
