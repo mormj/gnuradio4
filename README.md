@@ -3,7 +3,7 @@
 </p>
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/gnuradio/gnuradio4/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gnuradio/gnuradio4/actions/workflows/ci.yml)
+[![CI](https://github.com/gnuradio/gnuradio4-core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gnuradio/gnuradio4-core/actions/workflows/ci.yml)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
@@ -20,7 +20,7 @@
 > who require the existing production-supported GNU Radio platform.
 >
 > - GNU Radio 3.x stable release series: https://github.com/gnuradio/gnuradio
-> - Report GR4 issues here: https://github.com/gnuradio/gnuradio4/issues
+> - Report GR4 core issues here: https://github.com/gnuradio/gnuradio4-core/issues
 > - Report GNU Radio 3.x issues here: https://github.com/gnuradio/gnuradio/issues
 
 GNU Radio is a free & open-source signal processing runtime and signal processing
@@ -42,8 +42,8 @@ GNU Radio 4.0 uses modern C++ (C++23), and is tested for
 **To build**:
 
 ```bash
-git clone https://github.com/gnuradio/gnuradio4.git
-cd gnuradio4
+git clone https://github.com/gnuradio/gnuradio4-core.git
+cd gnuradio4-core
 
 # (Optional) If you experience excessive gcc memory usage during builds (needs sudo):
 sudo ./enableZRAM.sh
@@ -94,7 +94,7 @@ describe how to set up a local development environment.
 
 - [GNU Radio Website](https://gnuradio.org)
 - [GNU Radio Wiki](https://wiki.gnuradio.org/)
-- [Github issue tracker for bug reports and feature requests](https://github.com/gnuradio/gnuradio4/issues)
+- [Github issue tracker for core bug reports and feature requests](https://github.com/gnuradio/gnuradio4-core/issues)
 - [View the GNU Radio Mailing List Archive](https://lists.gnu.org/archive/html/discuss-gnuradio/)
 - [Subscribe to the GNU Radio Mailing List](https://lists.gnu.org/mailman/listinfo/discuss-gnuradio)
 - [GNU Radio Chatroom on Matrix](https://chat.gnuradio.org/)

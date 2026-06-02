@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 
 project(
-  gnuradio
+  gnuradio4-core
   VERSION 4.0.0
   LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
@@ -206,6 +206,7 @@ option(THREAD_SANITIZER "Enable thread sanitizer" OFF)
 option(ENABLE_TBB "Enable the TBB dependency for std::execution::par in gcc" OFF)
 option(ENABLE_EXAMPLES "Enable Example Builds" ${GR_TOPLEVEL_PROJECT})
 option(ENABLE_TESTING "Enable Test Builds" ${GR_TOPLEVEL_PROJECT})
+option(ENABLE_COVERAGE "Enable coverage reporting targets" OFF)
 option(MIT_ONLY "Exclude modules with non-MIT/Apache-compatible licences" OFF)
 option(GR_USE_FETCHCONTENT_DEPS "Allow CMake to download selected third-party dependencies with FetchContent" OFF)
 
@@ -455,23 +456,23 @@ endif()
 
 include(FetchContent)
 
-set(BOOST_UT_DISABLE_MODULE
-    ON
-    CACHE BOOL "Disable UT Module Support" FORCE)
-add_compile_definitions(BOOST_UT_DISABLE_MODULE)
-if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
+set(GR_NEEDS_UT ${ENABLE_TESTING})
+set(GR_NEEDS_HTTP ${ENABLE_TESTING})
+
+if(GR_NEEDS_UT)
+  set(BOOST_UT_DISABLE_MODULE
+      ON
+      CACHE BOOL "Disable UT Module Support" FORCE)
+  add_compile_definitions(BOOST_UT_DISABLE_MODULE)
+endif()
+
+if(GR_NEEDS_UT AND (EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS))
   FetchContent_Declare(
     ut
     GIT_REPOSITORY https://github.com/boost-ext/ut.git
     GIT_TAG 53e17f25119598c6458d30351b260193096ba67e # latest tag as of 2023-04-02
     EXCLUDE_FROM_ALL)
-
-  FetchContent_Declare(
-    vir-simd
-    GIT_REPOSITORY https://github.com/mattkretz/vir-simd.git
-    GIT_TAG v0.4.4
-    EXCLUDE_FROM_ALL)
-else()
+elseif(GR_NEEDS_UT)
   find_package(ut CONFIG QUIET)
   if(TARGET Boost::ut AND NOT TARGET ut)
     add_library(ut ALIAS Boost::ut)
@@ -486,7 +487,15 @@ else()
     add_library(ut INTERFACE)
     target_include_directories(ut INTERFACE ${GR_BOOST_UT_INCLUDE_DIR})
   endif()
+endif()
 
+if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
+  FetchContent_Declare(
+    vir-simd
+    GIT_REPOSITORY https://github.com/mattkretz/vir-simd.git
+    GIT_TAG v0.4.4
+    EXCLUDE_FROM_ALL)
+else()
   find_path(vir-simd_SOURCE_DIR vir/simd.h)
   if(NOT vir-simd_SOURCE_DIR)
     message(
@@ -495,13 +504,13 @@ else()
   endif()
 endif()
 
-if(EMSCRIPTEN)
+if(GR_NEEDS_HTTP AND EMSCRIPTEN)
   FetchContent_Declare(
     cpp-httplib
     GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
     GIT_TAG v0.18.1
     EXCLUDE_FROM_ALL)
-else()
+elseif(GR_NEEDS_HTTP)
   find_package(httplib CONFIG QUIET)
   if(NOT TARGET httplib::httplib)
     if(NOT PkgConfig_FOUND)
@@ -530,14 +539,18 @@ endif()
 set(GR_HTTP_ENABLED FALSE)
 
 set(GR_FETCH_MAKE_AVAILABLE_DEPS)
+if(GR_NEEDS_UT
+   AND (EMSCRIPTEN
+        OR GR_USE_FETCHCONTENT_DEPS))
+  list(APPEND GR_FETCH_MAKE_AVAILABLE_DEPS ut)
+endif()
 if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
   list(
     APPEND
     GR_FETCH_MAKE_AVAILABLE_DEPS
-    ut
     vir-simd)
 endif()
-if(EMSCRIPTEN)
+if(GR_NEEDS_HTTP AND EMSCRIPTEN)
   list(APPEND GR_FETCH_MAKE_AVAILABLE_DEPS cpp-httplib)
 endif()
 
@@ -601,7 +614,9 @@ if(Python3_FOUND AND NOT EMSCRIPTEN)
   endif()
 endif()
 
-add_subdirectory(bench) # custom ut addon for microbenchmarking
+if(ENABLE_TESTING)
+  add_subdirectory(bench) # custom ut addon for microbenchmarking
+endif()
 
 add_subdirectory(core)
 add_subdirectory(meta)
@@ -634,19 +649,7 @@ if(ENABLE_TESTING
     EXECUTABLE_ARGS
     "--output-on-failure"
     DEPENDENCIES
-    qa_buffer
-    qa_DataSink
-    qa_DynamicPort
-    qa_DynamicBlock
-    qa_UnmanagedSubGraph
-    qa_ManagedSubGraph
-    qa_filter
-    qa_Settings
-    qa_Tags
-    qa_Scheduler
-    qa_thread_pool
-    qa_thread_affinity
-    qa_YamlPmt
+    ${GR_CORE_COVERAGE_TARGETS}
     EXCLUDE
     "$CMAKE_BUILD_DIR/*")
   setup_target_for_coverage_gcovr_html(
@@ -657,19 +660,7 @@ if(ENABLE_TESTING
     EXECUTABLE_ARGS
     "--output-on-failure"
     DEPENDENCIES
-    qa_buffer
-    qa_DataSink
-    qa_DynamicPort
-    qa_DynamicBlock
-    qa_UnmanagedSubGraph
-    qa_ManagedSubGraph
-    qa_filter
-    qa_Settings
-    qa_Tags
-    qa_Scheduler
-    qa_thread_pool
-    qa_thread_affinity
-    qa_YamlPmt
+    ${GR_CORE_COVERAGE_TARGETS}
     EXCLUDE
     "$CMAKE_BUILD_DIR/*")
 endif()

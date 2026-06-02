@@ -1,23 +1,24 @@
-# GNURadio 4.0 Development Environment
+# GNU Radio 4 Core Development Environment
 
 ## Getting the source
 
 Get the source from the GitHub Repository:
 
 ```bash
-git clone git@github.com:gnuradio/gnuradio4.git
+git clone git@github.com:gnuradio/gnuradio4-core.git
+cd gnuradio4-core
 ```
 
 ## Building
 
 ### Docker CLI
 
-To just compile GNURadio4 without installing any dependencies you can just use the Docker image which is also used by our CI builds. The snippet below uses `docker run` to start the container with the current directory mapped into the container with the correct user and group IDs.
+To just compile GNU Radio 4 core without installing any dependencies you can use the Docker image used by CI builds. The snippet below uses `docker run` to start the container with the current directory mapped into the container with the correct user and group IDs.
 It then compiles the project and runs the testsuite.
 Note that while the binaries inside of `./build` can be accessed on the host system, they are linked against the libraries of the container and will most probably not run on the host system.
 
 ```bash
-me@host$ cd gnuradio4
+me@host$ cd gnuradio4-core
 me@host$ docker run \
     --user `id -u`:`id -g` \
     --volume="/etc/group:/etc/group:ro" \
@@ -44,16 +45,15 @@ To be able to natively compile some prerequisites have to be installed:
 - gcc >= 14 and/or clang >= 20
 - cmake >= 3.25.0
 - ninja (or GNU make)
-- optional for python block support: python3
-- optional for soapy (limesdr,rtlsdr) blocks: soapysdr
+- optional for Python-aware integrations: python3
 - optional for compiling to webassembly: emscripten >= 5.0.0
 
 To apply the project's formatting rules, you'll also need the correct formatters, `clang-format-18` and `cmake-format`. With these installed you can use the scripts in the repository to reformat your changes. For smaller changes, the CI will provide you with a patch which will fix the formatting (click on the "Details" link on the failed Restyled.io check), but for bigger changes it's useful to have local formatting.
 
-Once these are installed, you should be able to just compile and run GNURadio4:
+Once these are installed, you should be able to compile and run GNU Radio 4 core:
 
 ```bash
-me@host$ cd gnuradio4
+me@host$ cd gnuradio4-core
 me@host$ cmake -S . -B build
 me@host$ cmake --build build
 me@host$ ctest --test-dir build

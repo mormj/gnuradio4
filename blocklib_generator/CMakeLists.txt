@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(MyProject LANGUAGES CXX)
+project(GnuRadioBlockLibGenerator LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 

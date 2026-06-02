@@ -1,7 +1,7 @@
 # GNU Radio 4 - Installation Guide
 
 At the moment GNU Radio 4 is not yet packaged and has to be installed from source.
-This document describes the necessary steps and prerequisites to build, test and install gr4 to allow usage and block-library development.
+This document describes the necessary steps and prerequisites to build, test and install the GR4 core SDK for runtime usage and block-library development.
 
 As the installation and packaging matures, these instructions are expected to be extended.
 
@@ -12,8 +12,8 @@ As the installation and packaging matures, these instructions are expected to be
   - GCC ≥ 14.2 (Linux)
 - Git
 - pkg-config
-- Boost.UT development package or installed headers
-- cpp-httplib development package
+- Boost.UT development package or installed headers (tests only)
+- cpp-httplib development package (tests only)
 - vir-simd headers
 - Python 3 (optional)
 
@@ -24,20 +24,21 @@ g++ --version
 
 ## Clone Repository
 
-git clone https://github.com/gnuradio/gnuradio4.git
-cd gnuradio4
+git clone https://github.com/gnuradio/gnuradio4-core.git
+cd gnuradio4-core
 
 ## Build
 
 GNU Radio 4 uses an out-of-source CMake build.
 
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=OFF
 cmake --build build
 
 ## Run Tests
 
-cd build
-ctest --output-on-failure
+cmake -S . -B build-tests -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=ON
+cmake --build build-tests
+ctest --test-dir build-tests --output-on-failure
 
 ## Ubuntu 24.04 (Dependencies)
 
@@ -56,7 +57,7 @@ MacOS builds are supported by using `llvm@20` from the [Homebrew package manager
 
 - Linux: Expected to work with a modern toolchain
 - Windows: See Windows setup instructions:
-  https://github.com/gnuradio/gnuradio4/blob/main/DEVELOPMENT.md#win32-development-environment---msys2
+  https://github.com/gnuradio/gnuradio4-core/blob/main/DEVELOPMENT.md#win32-development-environment---msys2
 - macOS: supported using llvm@20 from homebrew
 
 ## Troubleshooting
@@ -68,4 +69,4 @@ MacOS builds are supported by using `llvm@20` from the [Homebrew package manager
   - CMakeFiles/CMakeOutput.log
 
 For a reproducible setup, see Docker workflow:
-https://github.com/gnuradio/gnuradio4/blob/main/DEVELOPMENT.md#docker-cli
+https://github.com/gnuradio/gnuradio4-core/blob/main/DEVELOPMENT.md#docker-cli

@@ -182,6 +182,16 @@ function(gr_add_block_library LIB_NAME)
     else()
       set(SPLIT_BLOCK_INSTANTIATIONS_ARG "")
     endif()
+    if(CBL_REGISTRY_HEADER)
+      set(REGISTRY_HEADER_ARG REGISTRY_HEADER ${CBL_REGISTRY_HEADER})
+    else()
+      set(REGISTRY_HEADER_ARG "")
+    endif()
+    if(CBL_REGISTRY_INSTANCE)
+      set(REGISTRY_INSTANCE_ARG REGISTRY_INSTANCE ${CBL_REGISTRY_INSTANCE})
+    else()
+      set(REGISTRY_INSTANCE_ARG "")
+    endif()
 
     set(OBJECT_LIB_NAME "${LIB_NAME}Object")
     add_library(${OBJECT_LIB_NAME} OBJECT ${CBL_SOURCES})
@@ -189,7 +199,9 @@ function(gr_add_block_library LIB_NAME)
     gr_generate_block_instantiations(${OBJECT_LIB_NAME}
         HEADERS ${CBL_HEADERS}
         MODULE_NAME_BASE ${LIB_NAME}
-        ${SPLIT_BLOCK_INSTANTIATIONS_ARG})
+        ${SPLIT_BLOCK_INSTANTIATIONS_ARG}
+        ${REGISTRY_HEADER_ARG}
+        ${REGISTRY_INSTANCE_ARG})
 
     target_link_libraries(${OBJECT_LIB_NAME} PUBLIC gnuradio4::gnuradio-core gnuradio4::gnuradio-blocklib-core ${CBL_LINK_LIBRARIES})
 

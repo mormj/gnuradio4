@@ -1,11 +1,11 @@
 # Core Repository Split Preparation
 
-GNU Radio 4 is being prepared so the current monorepo can become `gnuradio4-core`
-while preserving its full Git history. The reusable algorithm library and standard
-MIT block libraries are expected to become external repositories that build
-against the installed core SDK.
+GNU Radio 4 core is split from the original monorepo as `gnuradio4-core` while
+preserving its full Git history. Reusable algorithm libraries and standard MIT
+block libraries live in external repositories that build against the installed
+core SDK.
 
-During this transition:
+In this repository:
 
 - core code and public core headers must not depend on `algorithm/` or `blocks/`;
 - algorithm code may depend on the installed core SDK;
@@ -22,10 +22,10 @@ cmake --build build-core
 ctest --test-dir build-core --output-on-failure
 ```
 
-Standard blocks are moving to `gnuradio4-blocks`. Reusable non-block DSP
-algorithm libraries are moving to `gnuradio4-algorithm`. The extracted
-repositories should build against the installed core SDK rather than source-tree
-paths from this repository.
+Standard blocks belong in `gnuradio4-blocks`. Reusable non-block DSP algorithm
+libraries belong in `gnuradio4-algorithm`. Extracted repositories should build
+against the installed core SDK rather than source-tree paths from this
+repository.
 
 Standard-block and algorithm-dependent tests and benchmarks that previously lived
 under `core/test` and `core/benchmarks` have been removed from this core tree as

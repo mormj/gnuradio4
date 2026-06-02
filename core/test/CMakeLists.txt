@@ -62,6 +62,10 @@ foreach(TEST_NAME IN LISTS _CORE_TESTS)
 endforeach()
 
 add_ut_test(qa_SubGraphAssets)
+set(GR_CORE_COVERAGE_TARGETS
+    ${_CORE_TESTS}
+    qa_SubGraphAssets
+    PARENT_SCOPE)
 set(_QA_SUBGRAPH_HTTP_PORT 18765)
 target_compile_definitions(qa_SubGraphAssets PRIVATE HTTP_SERVER_PORT=${_QA_SUBGRAPH_HTTP_PORT})
 if(EMSCRIPTEN)

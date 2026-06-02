@@ -1,9 +1,8 @@
 # GR4 Block Development — User-API Reference
 
-Note: Standard block examples referenced by name in this document are moving to
-the future `gnuradio4-blocks` repository. This core repository keeps the block
-API and blocklib SDK surface, but no longer carries the standard block source
-tree locally.
+Note: Standard block implementations live outside this core repository. This
+repository keeps the block API, registry, and blocklib SDK surface, plus a
+minimal external blocklib smoke project under `test_external/minimal_blocklib`.
 
 GR4 blocks are `struct`s that inherit from `gr::Block<Derived>` via CRTP.
 Settings are (optionally) declared as `Annotated<T, "name", ...>` fields and exposed
@@ -130,7 +129,7 @@ void settingsChanged(const gr::property_map& /*old*/, const gr::property_map& ne
 | `gr::InputSpanLike`  | input spans — `consume(n)`, `tags()`, `rawTags`        |
 | `gr::OutputSpanLike` | output spans — `publish(n)`, `publishTag(map, offset)` |
 
-Reference: `Selector.hpp` (dynamic ports), `Soapy.hpp` (conditional port count)
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Settings & `Annotated<T, ...>`
 
@@ -210,7 +209,7 @@ using gr::property_map = gr::pmt::Value::Map;  // std::pmr::map<std::pmr::string
 Settings are read and written as `property_map` key–value pairs where keys match
 the `snake_case` setting name and values are `pmt::Value`.
 
-Reference: `Soapy.hpp` (rich annotations), `Rotator.hpp` (XOR constraints)
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Processing functions
 
@@ -353,7 +352,7 @@ requires std::is_arithmetic_v<T>
 | `INSUFFICIENT_OUTPUT_ITEMS` (-3) | need a larger output buffer           |
 | `ERROR` (-100)                   | error occurred                        |
 
-Reference: `NullSources.hpp` (source), `CommonBlocks.hpp` (1:1), `time_domain_filter.hpp` (history)
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Resampling & decimation/interpolation
 
@@ -405,7 +404,7 @@ template<typename T>
 struct WindowedFFT : gr::Block<WindowedFFT<T>, gr::Stride<512U>> { ... };
 ```
 
-Reference: `ConverterBlocks.hpp` (`Resampling<1,2>` and `<2,1>`), `time_domain_filter.hpp` (filter with history)
+Reference: `gr::Resampling<input, output>` and `gr::Stride<N>` in `Block.hpp`
 
 ## Lifecycle methods
 
@@ -470,7 +469,7 @@ gr::lifecycle::isActive(this->state());       // true for RUNNING, REQUESTED_PAU
 gr::lifecycle::isShuttingDown(this->state()); // true for REQUESTED_STOP, STOPPED
 ```
 
-Reference: `Soapy.hpp` (start/stop with hardware), `NullSources.hpp` (`requestStop`)
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Settings change callback
 
@@ -518,7 +517,7 @@ if (newSettings.contains("frequency_shift") && !newSettings.contains("phase_incr
 }
 ```
 
-Reference: `Rotator.hpp` (XOR), `Selector.hpp` (port resize + validation)
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Tags & streaming metadata
 
@@ -678,11 +677,11 @@ GR_REGISTER_BLOCK(my::Gain, [T], [float, double])
 GR_REGISTER_BLOCK(my::Converter, ([T], [U]), [float, double], [int, long])
 
 // extra non-type template arguments (here: 3UZ)
-GR_REGISTER_BLOCK("gr::electrical::ThreePhasePower", gr::electrical::PowerMetrics,
+GR_REGISTER_BLOCK("example::ThreeInputPower", example::PowerMetrics,
                    ([T], 3UZ), [float, double])
 
 // custom name + policy template argument — [T] inside policy is also expanded
-GR_REGISTER_BLOCK("gr::blocks::math::AddConst", gr::blocks::math::MathOpImpl,
+GR_REGISTER_BLOCK("example::math::AddConst", example::MathOpImpl,
                    ([T], std::plus<[T]>), [float, double, std::complex<float>])
 ```
 
@@ -693,7 +692,7 @@ GR_REGISTER_BLOCK("gr::blocks::math::AddConst", gr::blocks::math::MathOpImpl,
 | `[float, double]`       | type list for expansion of corresponding `[T]`               |
 | `"custom::name"`        | optional custom registered name (default: deduced from type) |
 
-Reference: `CommonBlocks.hpp`, `Math.hpp`, `PowerEstimators.hpp`, `Soapy.hpp`
+Reference: `test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp`
 
 ## Dos and don'ts
 
@@ -812,8 +811,5 @@ Reference: [`Block.hpp`](../core/include/gnuradio-4.0/Block.hpp) (`workInternal`
 - [`annotated.hpp`](../core/include/gnuradio-4.0/annotated.hpp) — `Annotated<T>`, `Limits`, `Doc`, `Unit`, `Visible`
 - [`Tag.hpp`](../core/include/gnuradio-4.0/Tag.hpp) — `Tag` struct and standard keys
 - [`LifeCycle.hpp`](../core/include/gnuradio-4.0/LifeCycle.hpp) — state machine (canonical diagram)
-- `CommonBlocks.hpp` — simple reference blocks
-- `Selector.hpp` — dynamic ports, tag routing
-- `TagMonitors.hpp` — tag handling patterns
-- `NullSources.hpp` — source/sink patterns
-- `ConverterBlocks.hpp` — resampling examples
+- [`minimal_blocklib/Gain.hpp`](../test_external/minimal_blocklib/include/minimal_blocklib/Gain.hpp) — minimal external block
+- [`minimal_blocklib/CMakeLists.txt`](../test_external/minimal_blocklib/CMakeLists.txt) — installed SDK consumption
