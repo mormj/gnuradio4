@@ -13,8 +13,8 @@ cd gnuradio4-core
 
 ### SDK Docker Image
 
-For core runtime development, prefer the native build below or the umbrella
-workspace scripts. The SDK Docker image is available for downstream out-of-tree module
+For core runtime development, prefer the native build below or the workspace
+repository scripts. The SDK Docker image is available for downstream out-of-tree module
 development and for checking that a consumer can build against an installed GNU
 Radio 4 core SDK.
 
@@ -46,7 +46,7 @@ See [docs/ci/sdk-image.md](docs/ci/sdk-image.md) for SDK image details.
 
 Some IDEs provide a simple way to specify a Docker container to use for building
 and executing a project. Use the SDK image when working on downstream consumers
-of the installed SDK. Use a native toolchain or the umbrella workspace when
+of the installed SDK. Use a native toolchain or the workspace repository when
 editing the core repository itself. For SDK-based IDE workflows, set the image
 to `ghcr.io/gnuradio/gnuradio4-core-sdk:main` and configure CMake with
 `CMAKE_PREFIX_PATH=/opt/gnuradio4`.
