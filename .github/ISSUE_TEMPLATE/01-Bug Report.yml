@@ -1,0 +1,71 @@
+name: Workspace bug report
+description: Report a GNU Radio 4 workspace, integration, or container problem
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tracker is for the GNU Radio 4 workspace: its module manifest,
+        build presets, integration tests, containers, CI, and shared docs.
+
+        Please report component code bugs to their owning repositories instead:
+        [Core](https://github.com/gnuradio/gnuradio4-core),
+        [Library](https://github.com/gnuradio/gnuradio4-library),
+        [Blocks](https://github.com/gnuradio/gnuradio4-blocks),
+        [Incubator](https://github.com/gnuradio/gr4-incubator),
+        [Control Plane](https://github.com/gnuradio/gnuradio4-control-plane), or
+        [Studio](https://github.com/gnuradio/gnuradio4-studio).
+
+        For usage questions, use the
+        [GNU Radio 4 technical discussion](https://matrix.to/#/#gr4-technical-users:gnuradio.org).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected workspace area
+      options:
+        - Configure, module selection, or build preset
+        - First clone or component checkout handling
+        - Cross-component build or integration test
+        - Distribution verification container
+        - Studio web image or browser launch
+        - CI workflow
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include what you expected to happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Identify the host and the build path used.
+      value: |
+        Workspace commit:
+        Host OS and version:
+        Compiler and CMake version:
+        Preset and command:
+        Container host and version (if applicable):
+        Component revisions or branches (if relevant):
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Provide the smallest set of commands and local changes needed to reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste the relevant configure, build, test, or container output.
+      render: shell
+  - type: markdown
+    attributes:
+      value: By submitting this issue, you agree to follow the [Code of Conduct](https://github.com/gnuradio/gnuradio4/blob/main/CODE_OF_CONDUCT.md).
