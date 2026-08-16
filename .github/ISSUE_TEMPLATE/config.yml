@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Workspace documentation
+    url: https://github.com/gnuradio/gnuradio4#documentation
+    about: Build, module, Studio, testing, and container guides for the GR4 workspace.
+  - name: GNU Radio 4 technical discussion
+    url: https://matrix.to/#/#gr4-technical-users:gnuradio.org
+    about: Ask usage and development questions before opening an issue.
+  - name: GNU Radio community
+    url: https://www.gnuradio.org/community/
+    about: Find GNU Radio community resources and discussion channels.

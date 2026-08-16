@@ -1,99 +1,85 @@
-# Contributing to GNU Radio
+# Contributing to the GNU Radio 4 workspace
 
-:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
+Thank you for contributing to GNU Radio 4. This repository is the top-level
+workspace and integration superbuild: it builds independently maintained
+component repositories into a single development environment. It does not own
+their source code, release history, or contribution process.
 
-The following is a set of guidelines for contributing. These are mostly guidelines, not rules. Use your best judgement, and feel free to propose changes to this document in a pull request.
+All participants must follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Open an issue
+## Choose the right repository
 
-For bugs, issues, or other discussion, please log a new issue in the GitHub repository.
+Submit component code changes to the repository that owns the component. The
+repositories in `src/` are ordinary Git working copies; this workspace never
+fetches, switches branches, or resets an existing checkout.
 
-GitHub supports [markdown](https://help.github.com/categories/writing-on-github/), so when filing bugs make sure you check the formatting before clicking submit.
+| Change | Submit it here? |
+| --- | --- |
+| Core runtime, scheduler, graph, plugin, or SDK code | No — `gnuradio4-core` |
+| Reusable DSP algorithms and support libraries | No — `gnuradio4-library` |
+| Standard blocks | No — `gnuradio4-blocks` |
+| Incubator, Control Plane, or Studio code | No — its owning repository |
+| Module manifest, CMake orchestration, presets, or activation | Yes |
+| Cross-component integration tests and installed-SDK smoke tests | Yes |
+| Container definitions, top-level CI, or shared workspace documentation | Yes |
 
-## Other discussions
+Follow the owning component's contribution guidance and issue tracker for a
+component change. When a change spans repositories, open the component pull
+requests first and link them from the workspace pull request. Test the
+workspace against the intended component branches or commits, and describe the
+required combination in the pull request.
 
-For general "how-to" and guidance questions about using GNU Radio to build and run applications, please have a look at the various
-examples or if you cannot find anything that fits your use-case use GitHub's discussions forum.
+## Develop and test workspace changes
 
-## Contributing code and content
+Start with the development profile for changes to orchestration, documentation,
+or the core component stack:
 
-We welcome all forms of contributions from the community. Please read the following guidelines to maximise the chances of your PR being merged.
+```sh
+cmake --preset dev
+cmake --build --preset dev --target check
+```
 
-### Communication
+Use the full profile when changing the component manifest, Control Plane,
+Studio, or integration shared by the complete stack:
 
-- Before starting work on a feature, check if there isn't already an example in the block library.
-  If not, then please open an issue on GitHub describing the proposed feature. We want to make sure any feature work goes smoothly.
-  We're happy to work with you to determine if it fits the current project direction and make sure no one else is already working on it.
+```sh
+cmake --preset full
+cmake --build --preset full --target check
+```
 
-- For any work related to setting up build, test, and CI for GNU Radio on GitHub, or for small patches or bug fixes, please open an issue
-  for tracking purposes, but we generally don't need a discussion prior to opening a PR.
+The `check` target runs the selected component tests and an out-of-tree
+installed-SDK consumer smoke test. The [build guide](docs/building.md),
+[testing guide](docs/testing.md), and [CI/container guide](docs/ci.md) describe
+the available profiles and the checks expected for a particular type of change.
 
-### Development process
+## DCO sign-off
 
-Please be sure to follow the usual process for submitting PRs:
+All commits submitted to this repository must carry a Developer Certificate of
+Origin sign-off. The pull-request CI checks every commit for it.
 
-- Fork the repository
-- Make sure it compiles w/o errors against the current release 'main' branch:
-- Write and add a descriptive/meaningful unit-test-case
-- apply the default code formatter (to minimise future refactoring)
-- Please check against common sanitizers, the CI/CD pipeline, or similar other QA code checker (N.B. other/further code improvements are welcome)
-- Create a pull request
-- Make sure your PR title is descriptive
-- Include a link back to an open issue in the PR description
+Use `git commit -s` to add the required trailer automatically:
 
-We reserve the right to close PRs that are not making progress. Closed PRs can be reopened again later and work can resume.
+```text
+Signed-off-by: Your Name <you@example.com>
+```
 
-### Copyright Assignment
+The complete [Developer Certificate of Origin](DCO.txt) explains what the
+sign-off certifies. A DCO sign-off is not a cryptographic signature.
 
-GNU Radio does not claim ownership of any contributions you make. All copyrights remain with the original author of the contribution. As such, we don't require copyright notices in the header of each file, and the broader copyright statement for collective attribution is located in the [README](README.md)
+## Pull requests
 
-#### Non-Revocability of Contributions
+Describe the problem and the change, identify affected components, and include
+the commands and results used to verify it. Keep each commit focused and ensure
+you understand and have tested the change you submit.
 
-By submitting a contribution to the GNU Radio project, you agree that your contribution is non-revocable. Once a contribution is accepted and merged into the GNU Radio repository, it cannot be withdrawn or removed by the original author. This ensures that the integrity and continuity of the project's codebase are preserved.
+For changes that affect users, contributors, or CI operators, update the
+relevant documentation in the same pull request. For container changes, build
+the affected image locally using the documented Docker command; Podman is an
+equivalent supported host.
 
-### License Terms
+## Licensing
 
-GNU Radio intends to maintain the existing license terms under which contributions are made. We do not intend to change the licensing terms of any contributions after submission. Any potential changes to the license, such as re-licensing, would require an explicit, agreed-upon process involving the contributor and the project maintainers. Initial license terms are specified in the LICENSE file of the subdirectory under which licensing differs from the top level license, or in the SPDX header of the individual file if not consistent with the overall subdirectory.
-
-By submitting a contribution, you agree to the terms of the Developer Certificate of Origin (DCO), which certifies that your contribution is your original work and that you have the right to submit it under the license terms of the specific module.
-
-
-### DCO Signing
-
-Code submitters must have the authority to merge that code into the public GNU Radio codebase.
-In some cases, the rights to exploit the code may belong to the contributor's employer, depending on jurisdiction
-and employment agreements.
-
-For that purpose, we use the [Developer's Certificate of Origin](DCO.txt). It is the same document used by other
-projects.
-Signing the DCO states that there are no legal reasons to not merge your code.
-
-To sign the DCO, suffix your git commits with a "Signed-off-by" line. When using the command line,
-you can use `git commit -s` to automatically add this line. If there were multiple authors of the code, or other types
-of stakeholders, make sure that all are listed, each with a separate Signed-off-by line.
-
-#### License Philosophy
-
-GNU Radio 4 uses the MIT License for the core runtime and libraries, with the option for submodules to be licensed under GPLv3 when the author desired stronger copyleft or the code origin requires it. This licensing model in combination with the DCO was chosen to support the following goals:
-
-- Maximize Adoption and Enable Public-Private Collaboration: The MIT License reduces legal and logistical friction for development partners - including those with cautious legal teams or incompatible licensing needs - making it easier for academia, industry, and government to integrate, contribute to, and build on GNU Radio. This fosters innovation, accelerates adoption across sectors, and ensures that the broader community benefits from shared advancements.
-
-- Encourage Contributions from a Diverse Ecosystem: By lowering legal barriers, we aim to attract contributors from companies, academic institutions, and individuals who might otherwise avoid contributing to more restrictively licensed codebases due to internal policies or licensing constraints.
-
-- Remain free/libre in the spirit of the open source principles: For certain submodules that implement signal processing algorithms or higher-level blocks, the GPLv3 license can be used to preserve the copyleft spirit of GNU Radio.
-
-- Empower Submodule Authors: We recognize that some contributors may wish to enforce stronger copyleft guarantees. By allowing submodules to choose GPLv3 (and out of tree authors to choose any other license), we provide flexibility for authors to assert more control over how their code is reused.
-
-- Stay Compliant with Evolving Legal Landscapes: A modular, permissive licensing approach ensures GNU Radio can remain compliant under changing national and international laws - particularly around cybersecurity, product liability, AI governance, and data protection regulations like GDPR.
-
-
-We accept contributions for in-tree code with the following license preference:
-
-Core: MIT required
-
-Block Library: MIT preferred, with GPLv3 as an alternative
-
-## Code of Conduct
-
-To ensure an inclusive community, contributors and users in the GNU Radio community should follow
-the [code of conduct](./CODE_OF_CONDUCT.md).
+The superbuild's orchestration, CI configuration, helper scripts, and
+documentation are licensed under the [MIT License](LICENSE). Each component
+repository retains its own license and contribution terms. Contributions must
+be made under the license that applies to the files being changed.

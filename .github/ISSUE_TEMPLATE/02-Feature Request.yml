@@ -1,0 +1,47 @@
+name: Workspace enhancement
+description: Propose an improvement to GNU Radio 4 workspace integration
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for superbuild, preset, container, CI, or shared
+        documentation improvements. New blocks and component APIs belong in the
+        owning component repository.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected workspace area
+      options:
+        - Module manifest or dependency orchestration
+        - Build preset or developer workflow
+        - Integration test
+        - Distribution or Studio container
+        - CI or published artifact
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What workflow or integration limitation should change?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the desired behavior and any alternatives considered.
+    validations:
+      required: true
+  - type: textarea
+    id: coordination
+    attributes:
+      label: Component coordination
+      description: List affected component repositories or linked issues and pull requests, if applicable.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: By submitting this issue, you agree to follow the [Code of Conduct](https://github.com/gnuradio/gnuradio4/blob/main/CODE_OF_CONDUCT.md).
