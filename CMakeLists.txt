@@ -101,6 +101,11 @@ function(gr4_add_project name)
     message(FATAL_ERROR "gr4_add_project(${name}) requires SOURCE_DIR")
   endif()
 
+  if(name STREQUAL "gnuradio4-core")
+    gr4_add_vir_simd()
+    list(APPEND PROJECT_DEPENDS vir-simd)
+  endif()
+
   cmake_path(ABSOLUTE_PATH PROJECT_SOURCE_DIR BASE_DIRECTORY "${CMAKE_SOURCE_DIR}" NORMALIZE)
   set(project_binary_dir "${CMAKE_BINARY_DIR}/projects/${name}")
   set(project_stamp_dir "${CMAKE_BINARY_DIR}/stamp/${name}")
@@ -219,6 +224,52 @@ function(gr4_add_project name)
     set_property(GLOBAL APPEND PROPERTY GR4_CTEST_DIRS "${project_binary_dir}")
     set_property(GLOBAL APPEND PROPERTY GR4_TEST_TARGETS "${name}")
   endif()
+endfunction()
+
+function(gr4_add_vir_simd)
+  set(name vir-simd)
+  set(source_dir "${GR4_SOURCE_ROOT}/vir-simd")
+  set(project_stamp_dir "${CMAKE_BINARY_DIR}/stamp/${name}")
+  if(EXISTS "${source_dir}/vir/simd.h")
+    set(download_args DOWNLOAD_COMMAND "" UPDATE_COMMAND "" PATCH_COMMAND "")
+  else()
+    set(download_args
+        DOWNLOAD_COMMAND
+          "${CMAKE_COMMAND}"
+          "-DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}"
+          "-DSOURCE_DIR:PATH=<SOURCE_DIR>"
+          "-DSOURCE_MARKER:STRING=vir/simd.h"
+          "-DGIT_REPOSITORY:STRING=https://github.com/mattkretz/vir-simd.git"
+          "-DGIT_TAG:STRING=v0.4.4"
+          -P "${CMAKE_SOURCE_DIR}/cmake/CloneIfMissing.cmake"
+        UPDATE_COMMAND ""
+        PATCH_COMMAND "")
+  endif()
+
+  ExternalProject_Add(
+    "${name}"
+    ${download_args}
+    SOURCE_DIR "${source_dir}"
+    STAMP_DIR "${project_stamp_dir}"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND
+      "${CMAKE_COMMAND}"
+      "-DSOURCE_DIR:PATH=<SOURCE_DIR>/vir"
+      "-DDESTINATION:PATH=${CMAKE_INSTALL_PREFIX}/include/vir"
+      -P "${CMAKE_SOURCE_DIR}/cmake/InstallHeaders.cmake"
+    BUILD_ALWAYS TRUE
+    STEP_TARGETS download
+    EXCLUDE_FROM_ALL TRUE
+    USES_TERMINAL_INSTALL TRUE)
+
+  add_custom_target(
+    "${name}-clean"
+    COMMAND "${CMAKE_COMMAND}" -E rm -rf "${project_stamp_dir}"
+    COMMENT "Removing ${name}'s superbuild state")
+
+  set_property(GLOBAL APPEND PROPERTY GR4_PROJECT_TARGETS "${name}")
+  set_property(GLOBAL APPEND PROPERTY GR4_SOURCE_TARGETS "${name}-download")
 endfunction()
 
 function(gr4_add_node_project name)
