@@ -1,0 +1,19 @@
+schema_version: "0.1"
+id: thorough
+method: ../REVIEW-GUIDELINES.md
+question: Does the change satisfy merge, runtime, and security concerns across affected integration and supported configuration boundaries?
+# Resolve these IDs to sibling YAML files. Combine by maximum depth, not concatenation.
+combine: [maintainer, developer, security]
+emphasis: [combined-concerns, cross-component-behavior, integration, version-and-configuration-matrices, adversarial-cases, deeper-disproof]
+default_depth: trace
+dimension_depths:
+  architecture-integration: challenge
+  compatibility-contracts: challenge
+  build-deployment: challenge
+  testing-observability: challenge
+escalation_rules:
+  - when: A new observation contradicts an assumption or crosses a previously unexamined component boundary.
+    dimensions: [correctness-data, lifecycle-state-progress, ownership-resources, documentation-migration]
+    depth: challenge
+report_emphasis: [deduplicated-findings, integration-and-threat-coverage, disproof-results, remaining-limits]
+include_nits: false

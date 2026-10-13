@@ -1,0 +1,27 @@
+schema_version: "0.1"
+id: security
+method: ../REVIEW-GUIDELINES.md
+question: How can untrusted, malformed, unexpected, or adversarial input cause unsafe behavior?
+emphasis: [actors-and-trust-boundaries, authentication-and-authorization, parsing, validation, dangerous-sinks, filesystem-and-network, unsafe-execution, secrets, exhaustion, size-and-integer-issues, dependencies, reachable-effects]
+default_depth: screen
+dimension_depths:
+  security-trust: challenge
+  correctness-data: trace
+  compatibility-contracts: trace
+  ownership-resources: trace
+  errors-recovery: trace
+  performance-capacity: trace
+  build-deployment: trace
+  testing-observability: trace
+escalation_rules:
+  - when: Attacker-controlled size, recursion, work, path, destination, or execution input reaches a sensitive sink.
+    dimensions: [correctness-data, ownership-resources, performance-capacity, errors-recovery]
+    depth: challenge
+  - when: An unsafe effect depends on shared state, authorization timing, cancellation, or resource reuse.
+    dimensions: [concurrency-coordination, lifecycle-state-progress]
+    depth: challenge
+  - when: A dependency, packaging default, or deployment permission changes exposure.
+    dimensions: [build-deployment, testing-observability]
+    depth: challenge
+report_emphasis: [actor-capabilities, reachable-paths, unsafe-consequences, existing-mitigations, verification-limits]
+include_nits: false

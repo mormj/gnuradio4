@@ -1,0 +1,24 @@
+schema_version: "0.1"
+id: maintainer
+method: ../REVIEW-GUIDELINES.md
+question: Should this change merge?
+emphasis: [correctness, architecture, public-contracts, compatibility, maintainability, cross-component-effects, tests, deployment, migration]
+default_depth: screen
+# Cybersecurity review is outside the maintainer profile unless explicitly requested.
+excluded_dimensions: [security-trust]
+dimension_depths:
+  correctness-data: trace
+  architecture-integration: trace
+  compatibility-contracts: trace
+  testing-observability: trace
+  build-deployment: trace
+  documentation-migration: trace
+escalation_rules:
+  - when: Public or persisted contracts change, or consumers may be version-skewed.
+    dimensions: [compatibility-contracts, architecture-integration, documentation-migration]
+    depth: challenge
+  - when: A shared invariant, integration boundary, or candidate blocker is affected.
+    dimensions: [correctness-data, architecture-integration, testing-observability]
+    depth: challenge
+report_emphasis: [merge-blockers, significant-findings, policy-decisions, integration-prerequisites, validation-limits]
+include_nits: false

@@ -1,0 +1,357 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GNU Radio 4 review contract v0.2",
+  "description": "Reviewer-generated GNU Radio 4 comparison and execution state. Persistent project references are part of framework_revision. Ready identities still require semantic verification; resolve recipe and evidence references manually.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "review_profile",
+    "review_mode",
+    "target",
+    "base",
+    "comparison_strategy",
+    "related_repositories",
+    "required_checks",
+    "project_invariants",
+    "unknowns",
+    "out_of_scope",
+    "execution_permissions",
+    "framework_revision",
+    "build_environment"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "ready"
+      ]
+    },
+    "review_id": {
+      "$ref": "#/$defs/text"
+    },
+    "framework_revision": {
+      "$ref": "#/$defs/text",
+      "description": "Identity of the complete .review framework including project knowledge: superbuild commit plus content digests for uncommitted framework changes."
+    },
+    "review_profile": {
+      "enum": [
+        "maintainer",
+        "developer",
+        "security",
+        "thorough"
+      ]
+    },
+    "review_mode": {
+      "enum": [
+        "fresh",
+        "closure",
+        "rebase",
+        "scoped_audit"
+      ]
+    },
+    "target": {
+      "$ref": "#/$defs/snapshot"
+    },
+    "base": {
+      "$ref": "#/$defs/snapshot"
+    },
+    "comparison_strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "rationale",
+        "diff_base",
+        "diff_target"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "merge_base_contribution",
+            "direct_endpoints",
+            "stack_increment",
+            "integration_result",
+            "rebase_closure"
+          ]
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "diff_base": {
+          "$ref": "#/$defs/unknown_text"
+        },
+        "diff_target": {
+          "$ref": "#/$defs/unknown_text"
+        },
+        "details": {
+          "type": "object",
+          "description": "Strategy-specific provenance: destination, parents, previous snapshots, resolutions, or reproduction references."
+        }
+      }
+    },
+    "related_repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "repository",
+          "revision",
+          "relationship"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "repository": {
+            "$ref": "#/$defs/text"
+          },
+          "revision": {
+            "$ref": "#/$defs/unknown_text"
+          },
+          "relationship": {
+            "$ref": "#/$defs/text"
+          },
+          "artifact_identity": {
+            "$ref": "#/$defs/unknown_text"
+          },
+          "prerequisite": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "build_environment": {
+      "type": "object",
+      "description": "Material versions, configuration IDs, artifact identities, prerequisites, and differences from CI; redact secrets."
+    },
+    "required_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "procedure",
+          "expected_execution"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "procedure": {
+            "$ref": "#/$defs/text"
+          },
+          "environment": {
+            "$ref": "#/$defs/unknown_text"
+          },
+          "applicability": {
+            "type": "string"
+          },
+          "expected_execution": {
+            "$ref": "#/$defs/text"
+          },
+          "exemption": {
+            "$ref": "#/$defs/unknown_text"
+          }
+        }
+      }
+    },
+    "project_invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "statement",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "statement": {
+            "$ref": "#/$defs/text"
+          },
+          "source": {
+            "$ref": "#/$defs/text"
+          },
+          "status": {
+            "enum": [
+              "confirmed",
+              "inferred",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "accepted_decisions": {
+      "$ref": "#/$defs/strings"
+    },
+    "unknowns": {
+      "$ref": "#/$defs/strings"
+    },
+    "out_of_scope": {
+      "$ref": "#/$defs/strings"
+    },
+    "execution_permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_checks",
+        "isolated_probes",
+        "production_edits",
+        "publish",
+        "approve",
+        "commit",
+        "push",
+        "merge",
+        "authority"
+      ],
+      "properties": {
+        "run_checks": {
+          "type": "boolean"
+        },
+        "isolated_probes": {
+          "type": "boolean"
+        },
+        "production_edits": {
+          "type": "boolean"
+        },
+        "publish": {
+          "type": "boolean"
+        },
+        "approve": {
+          "type": "boolean"
+        },
+        "commit": {
+          "type": "boolean"
+        },
+        "push": {
+          "type": "boolean"
+        },
+        "merge": {
+          "type": "boolean"
+        },
+        "authority": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "timing_repetitions": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "stop_rule": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "properties": {
+              "revision": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "base": {
+            "properties": {
+              "revision": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "comparison_strategy": {
+            "properties": {
+              "diff_base": {
+                "$ref": "#/$defs/text"
+              },
+              "diff_target": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unknown_text": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "strings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "ref",
+        "revision"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/text"
+        },
+        "ref": {
+          "$ref": "#/$defs/unknown_text"
+        },
+        "revision": {
+          "$ref": "#/$defs/unknown_text"
+        },
+        "working_tree": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

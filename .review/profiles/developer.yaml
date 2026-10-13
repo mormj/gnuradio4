@@ -1,0 +1,23 @@
+schema_version: "0.1"
+id: developer
+method: ../REVIEW-GUIDELINES.md
+question: Does this implementation behave correctly under realistic and edge-case conditions?
+emphasis: [state-transitions, lifecycle, concurrency, ownership, recovery, retries, resources, partial-and-zero-progress, eos-and-termination, malformed-and-boundary-inputs, regression-tests]
+default_depth: screen
+dimension_depths:
+  correctness-data: challenge
+  concurrency-coordination: trace
+  lifecycle-state-progress: challenge
+  ownership-resources: trace
+  errors-recovery: challenge
+  testing-observability: trace
+  performance-capacity: trace
+escalation_rules:
+  - when: Shared state, callbacks, cancellation, or replacement changes an object's lifetime or ordering.
+    dimensions: [concurrency-coordination, ownership-resources, lifecycle-state-progress]
+    depth: challenge
+  - when: Bounded work, backpressure, or a regression oracle depends on timing or progress.
+    dimensions: [performance-capacity, testing-observability]
+    depth: challenge
+report_emphasis: [failure-paths, state-and-resource-effects, reproductions, regression-oracles, verification-limits]
+include_nits: false

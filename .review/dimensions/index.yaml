@@ -1,0 +1,40 @@
+schema_version: "0.1"
+method: ../REVIEW-GUIDELINES.md
+# Paths are relative to this catalog. These are routing signals, not finding quotas.
+dimensions:
+  - id: correctness-data
+    file: correctness-data.md
+    signals: Logic, transforms, indexing, units, ordering, serialization, or boundary behavior changes.
+  - id: architecture-integration
+    file: architecture-integration.md
+    signals: Responsibilities, shared invariants, dependency edges, or component boundaries change.
+  - id: compatibility-contracts
+    file: compatibility-contracts.md
+    signals: Public APIs, protocols, stored formats, configuration, defaults, or version admission change.
+  - id: concurrency-coordination
+    file: concurrency-coordination.md
+    signals: Shared mutable state, tasks, callbacks, synchronization, or distributed ordering changes.
+  - id: lifecycle-state-progress
+    file: lifecycle-state-progress.md
+    signals: Initialization, retries, queues, backpressure, cancellation, EOS, stop, or restart changes.
+  - id: ownership-resources
+    file: ownership-resources.md
+    signals: Resources are acquired, borrowed, transferred, replaced, published, or released.
+  - id: errors-recovery
+    file: errors-recovery.md
+    signals: Errors, rollback, retries, fallback, cleanup, or partial side effects change.
+  - id: security-trust
+    file: security-trust.md
+    signals: Untrusted input or control reaches assets, permissions, parsing, execution, I/O, or dependencies.
+  - id: testing-observability
+    file: testing-observability.md
+    signals: Executable behavior, test oracles, readiness, diagnostics, or coverage claims change.
+  - id: performance-capacity
+    file: performance-capacity.md
+    signals: Complexity, buffering, blocking, fan-out, retry load, or hot-path costs change.
+  - id: build-deployment
+    file: build-deployment.md
+    signals: Build graph, feature gates, dependencies, exports, installation, or platform support changes.
+  - id: documentation-migration
+    file: documentation-migration.md
+    signals: Public behavior, operator actions, defaults, compatibility promises, or migration steps change.
