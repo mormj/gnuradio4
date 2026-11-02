@@ -1,11 +1,13 @@
 ---
 name: gr4-review
-description: Review GNU Radio 4 component or superbuild PRs as a maintainer, developer, security reviewer, or thorough reviewer. Resolve and pin review state, investigate behavior, and disprove candidates. Use for requested GR4 reviews and audits, not ordinary implementation work.
+description: Review GNU Radio 4 component or superbuild PRs, individually or in ordered batches, as a maintainer, developer, security reviewer, or thorough reviewer. Resolve and pin review state, investigate behavior, and disprove candidates. Use for requested GR4 reviews and audits, not ordinary implementation work.
 ---
 
 # GNU Radio 4 review
 
 Accept the normal request: **Review PR #27 in gnuradio4-blocks as a maintainer.** The superbuild containing this file's `.review/` directory is the framework home. Resolve links relative to this file. The reviewer supplies setup and generates the contract; do not ask the user for routine SHAs, stack parents, SDK paths, commands, dimensions, depth or contract fields.
+
+For an ordered or explicitly sequential batch of PRs, also read [sequential-reviews.md](sequential-reviews.md). Apply the workflow below to each PR in the requested order, retain separate comparison/evidence records, and put the summary and full per-PR review content in the batch's `.work/reviews/<batch-id>/REVIEW.md`.
 
 1. Parse component, review profile and unusual scope constraints. Use [maintainer](profiles/maintainer.yaml) for a merge decision or an unspecified profile, [developer](profiles/developer.yaml) for implementation behavior, [security](profiles/security.yaml) for adversarial/trust analysis, and [thorough](profiles/thorough.yaml) for explicitly combined assessment. Honor explicit choices and record inferences. If the component is omitted, use unambiguous task/repository context.
 2. Read [REVIEW-GUIDELINES.md](REVIEW-GUIDELINES.md) in full and the selected profile. For thorough, read its three named profiles and take maximum applicable depths. Missing mandatory framework resources are a setup limitation; do not silently substitute a weaker method.

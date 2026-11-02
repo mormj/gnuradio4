@@ -11,6 +11,7 @@ Also supported:
 ```text
 Review PR #17 in gnuradio4-core as a developer.
 Perform a security review of PR #42 in gnuradio4-library.
+Review sequentially as maintainer: control-plane#35, control-plane#36, then core#201; control-plane#36 must merge before core#201.
 ```
 
 The reviewer knows the GNU Radio 4 project family from this framework. It resolves the component, retrieves PR metadata, pins the intended comparison and dependencies, chooses checks, and generates its review contract. Users normally supply only the change, profile and unusual constraints.
@@ -37,6 +38,8 @@ Persistent GNU Radio knowledge lives in:
 - [policies.md](project/policies.md): documented policy, discovered engineering invariants and per-review state.
 
 The reviewer generates `review-contract.yaml`, `candidate-ledger.md` and `REVIEW.md` in a unique `<superbuild>/.work/reviews/<run-id>/` directory. Detailed evidence stays alongside them, while temporary sources, worktrees, build trees, install prefixes, probes, and logs stay below that run's `work/` directory instead of `/tmp`. The repository ignores `.work/`; review artifacts are not committed automatically. Review completion, technical assessment, integration readiness and pending obligations remain separate.
+
+For [sequential batches](sequential-reviews.md), retain each PR's comparison and evidence records and consolidate the summary and full per-PR reviews into `.work/reviews/<batch-id>/REVIEW.md`. The batch report is the complete deliverable, rather than only an index of individual reports; the repository-root `REVIEW.md` is left alone unless explicitly selected.
 
 The canonical deployment is `/home/josh/gnuradio/gnuradio4-review/.review/`. The directory is self-contained; keep its relative layout intact. In a session that has not loaded the skill, the one-time entry instruction is:
 
